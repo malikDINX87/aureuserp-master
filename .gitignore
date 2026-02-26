@@ -1,4 +1,5 @@
 /.phpunit.cache
+**/.DS_Store
 /node_modules
 /npm-debug.log
 /public/build
@@ -7,6 +8,7 @@
 /storage/*.key
 /storage/pail
 /database/*.sqlite
+/public/images/invoice-*.pdf
 /vendor
 .env
 .env.backup
