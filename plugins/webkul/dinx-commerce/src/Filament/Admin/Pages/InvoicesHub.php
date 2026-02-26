@@ -7,12 +7,19 @@ use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Webkul\Account\Enums\JournalType;
 use Webkul\Account\Enums\MoveState;
+use Webkul\Account\Enums\MoveType;
+use Webkul\Account\Enums\PaymentState;
+use Webkul\Account\Models\Journal;
 use UnitEnum;
 use Webkul\Account\Models\Invoice;
+use Webkul\Account\Models\Partner;
+use Webkul\DinxCommerce\Models\DinxContract;
 use Webkul\DinxCommerce\Models\DinxContractEvent;
 use Webkul\DinxCommerce\Models\DinxContractInvoiceLink;
 use Webkul\DinxCommerce\Models\DinxPayPalOrder;
@@ -21,6 +28,7 @@ use Webkul\DinxCommerce\Models\DinxRecurringInvoiceProfile;
 use Webkul\DinxCommerce\Services\PayPalService;
 use Webkul\DinxCommerce\Services\RecurringInvoiceService;
 use Webkul\DinxCommerce\Settings\DinxWorkspaceSettings;
+use Webkul\Support\Models\Currency;
 
 class InvoicesHub extends Page
 {
@@ -43,6 +51,17 @@ class InvoicesHub extends Page
     public ?int $activityInvoiceId = null;
 
     public float $billableRate = 150.0;
+
+    public bool $showCreatePayPalModal = false;
+
+    /**
+     * @var array<string, mixed>
+     */
+    public array $paypalCreateForm = [];
+
+    public ?string $latestPayPalApprovalUrl = null;
+
+    public ?int $latestPayPalInvoiceId = null;
 
     protected static function getPagePermission(): ?string
     {
@@ -72,6 +91,204 @@ class InvoicesHub extends Page
         $settings = app(DinxWorkspaceSettings::class);
 
         $this->billableRate = (float) $settings->project_default_billable_hourly_rate;
+
+        $this->resetPayPalCreateForm();
+    }
+
+    public function openCreatePayPalModal(): void
+    {
+        $this->resetPayPalCreateForm();
+        $this->showCreatePayPalModal = true;
+    }
+
+    public function closeCreatePayPalModal(): void
+    {
+        $this->showCreatePayPalModal = false;
+    }
+
+    public function createPayPalInvoice(): void
+    {
+        $data = $this->validate([
+            'paypalCreateForm.partner_id' => ['required', 'integer', 'exists:partners_partners,id'],
+            'paypalCreateForm.amount' => ['required', 'numeric', 'min:0.01'],
+            'paypalCreateForm.invoice_date' => ['required', 'date'],
+            'paypalCreateForm.invoice_date_due' => ['required', 'date', 'after_or_equal:paypalCreateForm.invoice_date'],
+            'paypalCreateForm.currency_id' => ['nullable', 'integer', 'exists:currencies,id'],
+            'paypalCreateForm.reference' => ['nullable', 'string', 'max:255'],
+            'paypalCreateForm.contract_id' => ['nullable', 'integer', 'exists:dinx_contracts,id'],
+        ])['paypalCreateForm'];
+
+        $user = Auth::user();
+
+        if (! $user?->default_company_id) {
+            Notification::make()
+                ->title('Missing default company')
+                ->body('Set a default company on your user before creating invoices.')
+                ->danger()
+                ->send();
+
+            return;
+        }
+
+        $journalId = Journal::query()
+            ->where('company_id', $user->default_company_id)
+            ->where('type', JournalType::SALE->value)
+            ->value('id');
+
+        if (! $journalId) {
+            Notification::make()
+                ->title('Sales journal not found')
+                ->body('Create a Sales journal first, then retry invoice creation.')
+                ->danger()
+                ->persistent()
+                ->send();
+
+            return;
+        }
+
+        $contract = null;
+        if (! empty($data['contract_id'])) {
+            $contract = DinxContract::query()->find((int) $data['contract_id']);
+        }
+
+        if ($contract && (int) $contract->partner_id !== (int) $data['partner_id']) {
+            Notification::make()
+                ->title('Contract mismatch')
+                ->body('The selected contract belongs to a different client.')
+                ->danger()
+                ->send();
+
+            return;
+        }
+
+        if (! app(PayPalService::class)->isConfigured()) {
+            Notification::make()
+                ->title('PayPal is not configured')
+                ->body('Add PayPal credentials in DINX ERP settings before creating PayPal invoices.')
+                ->danger()
+                ->persistent()
+                ->send();
+
+            return;
+        }
+
+        try {
+            $invoice = DB::transaction(function () use ($data, $journalId, $user, $contract) {
+                $amount = round((float) $data['amount'], 2);
+                $invoiceDate = Carbon::parse((string) $data['invoice_date'])->toDateString();
+                $dueDate = Carbon::parse((string) $data['invoice_date_due'])->toDateString();
+                $currencyId = $data['currency_id']
+                    ?: ($user->defaultCompany?->currency_id ?: Currency::query()->where('active', true)->value('id'));
+
+                $invoice = Invoice::query()->create([
+                    'journal_id' => $journalId,
+                    'company_id' => (int) $user->default_company_id,
+                    'partner_id' => (int) $data['partner_id'],
+                    'currency_id' => $currencyId ? (int) $currencyId : null,
+                    'move_type' => MoveType::OUT_INVOICE->value,
+                    'state' => MoveState::DRAFT->value,
+                    'payment_state' => PaymentState::NOT_PAID->value,
+                    'date' => $invoiceDate,
+                    'invoice_date' => $invoiceDate,
+                    'invoice_date_due' => $dueDate,
+                    'reference' => trim((string) ($data['reference'] ?? '')) !== '' ? trim((string) $data['reference']) : null,
+                    'invoice_origin' => 'DINX ERP Invoices Hub',
+                    'amount_total' => $amount,
+                    'amount_residual' => $amount,
+                    'amount_untaxed' => $amount,
+                    'amount_tax' => 0,
+                    'amount_total_signed' => $amount,
+                    'amount_total_in_currency_signed' => $amount,
+                    'amount_residual_signed' => $amount,
+                    'amount_untaxed_signed' => $amount,
+                    'amount_untaxed_in_currency_signed' => $amount,
+                    'amount_tax_signed' => 0,
+                    'quick_edit_total_amount' => $amount,
+                ]);
+
+                if ($contract) {
+                    DinxContractInvoiceLink::query()->updateOrCreate(
+                        [
+                            'contract_id' => (int) $contract->id,
+                            'invoice_id' => (int) $invoice->id,
+                        ],
+                        []
+                    );
+                }
+
+                return $invoice;
+            });
+
+            $approvalUrl = app(PayPalService::class)->getOrCreateApprovalUrl(
+                $invoice,
+                $contract?->id ? (int) $contract->id : null
+            );
+
+            $this->latestPayPalApprovalUrl = $approvalUrl;
+            $this->latestPayPalInvoiceId = (int) $invoice->id;
+            $this->showCreatePayPalModal = false;
+
+            Notification::make()
+                ->title('PayPal invoice created')
+                ->body('Invoice '.$invoice->name.' is ready. Open the PayPal checkout link below.')
+                ->success()
+                ->persistent()
+                ->send();
+        } catch (\Throwable $exception) {
+            Notification::make()
+                ->title('Failed to create PayPal invoice')
+                ->body($exception->getMessage())
+                ->danger()
+                ->persistent()
+                ->send();
+        }
+    }
+
+    public function getClientOptionsProperty(): array
+    {
+        return Partner::query()
+            ->select(['id', 'name'])
+            ->whereNotNull('name')
+            ->orderBy('name')
+            ->limit(500)
+            ->pluck('name', 'id')
+            ->all();
+    }
+
+    public function getContractOptionsProperty(): array
+    {
+        return DinxContract::query()
+            ->select(['id', 'title'])
+            ->orderByDesc('id')
+            ->limit(500)
+            ->pluck('title', 'id')
+            ->all();
+    }
+
+    public function getCurrencyOptionsProperty(): array
+    {
+        return Currency::query()
+            ->select(['id', 'name'])
+            ->where('active', true)
+            ->orderBy('name')
+            ->pluck('name', 'id')
+            ->all();
+    }
+
+    protected function resetPayPalCreateForm(): void
+    {
+        $defaultCurrencyId = Auth::user()?->defaultCompany?->currency_id
+            ?: Currency::query()->where('active', true)->value('id');
+
+        $this->paypalCreateForm = [
+            'partner_id' => null,
+            'contract_id' => null,
+            'amount' => null,
+            'invoice_date' => now()->toDateString(),
+            'invoice_date_due' => now()->addDays(14)->toDateString(),
+            'currency_id' => $defaultCurrencyId ? (int) $defaultCurrencyId : null,
+            'reference' => null,
+        ];
     }
 
     public function setStatusFilter(string $filter): void

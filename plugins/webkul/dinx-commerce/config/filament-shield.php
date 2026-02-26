@@ -1,13 +1,11 @@
 <?php
 
 use Webkul\DinxCommerce\Filament\Admin\Resources\DinxContractResource;
-use Webkul\DinxCommerce\Filament\Admin\Resources\DinxPayPalOrderResource;
 
 return [
     'resources' => [
         'manage' => [
             DinxContractResource::class => ['view_any', 'view', 'create', 'update'],
-            DinxPayPalOrderResource::class => ['view_any', 'view'],
         ],
         'exclude' => [],
     ],

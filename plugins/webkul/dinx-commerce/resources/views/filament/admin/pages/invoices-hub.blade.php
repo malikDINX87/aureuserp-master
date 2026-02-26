@@ -4,6 +4,9 @@
         $invoices = $this->invoices;
         $activity = $this->invoiceActivity;
         $newInvoiceUrl = $this->newInvoiceUrl;
+        $clientOptions = $this->clientOptions;
+        $contractOptions = $this->contractOptions;
+        $currencyOptions = $this->currencyOptions;
     @endphp
 
     <div class="dinx-shell">
@@ -11,10 +14,27 @@
             title="Invoices"
             subtitle="PayPal-first billing workspace with collection status, reminders, and payment timeline."
         >
-            <a href="{{ $newInvoiceUrl }}" class="dinx-focus-ring rounded-md bg-[#004AAD] px-3 py-2 text-xs font-semibold text-white hover:bg-[#003D8F]">
-                + New Invoice
+            <button type="button" wire:click="openCreatePayPalModal" class="dinx-focus-ring rounded-md bg-[#004AAD] px-3 py-2 text-xs font-semibold text-white hover:bg-[#003D8F]">
+                + New PayPal Invoice
+            </button>
+            <a href="{{ $newInvoiceUrl }}" class="dinx-focus-ring rounded-md border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50">
+                Open Full Invoice Form
             </a>
         </x-dinx-commerce::filament.admin.components.workspace-hero>
+
+        @if ($this->latestPayPalApprovalUrl)
+            <div class="dinx-card">
+                <div class="dinx-card-body flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                        <p class="text-sm font-semibold text-slate-900">PayPal checkout link ready for Invoice #{{ $this->latestPayPalInvoiceId }}</p>
+                        <p class="mt-1 break-all text-xs text-slate-600">{{ $this->latestPayPalApprovalUrl }}</p>
+                    </div>
+                    <a href="{{ $this->latestPayPalApprovalUrl }}" target="_blank" rel="noopener noreferrer" class="dinx-focus-ring rounded-md bg-[#004AAD] px-3 py-2 text-xs font-semibold text-white hover:bg-[#003D8F]">
+                        Open PayPal Checkout
+                    </a>
+                </div>
+            </div>
+        @endif
 
         <div class="dinx-card">
             <div class="dinx-card-body space-y-4">
@@ -133,4 +153,73 @@
             @endforelse
         </ol>
     </x-dinx-commerce::filament.admin.components.right-drawer>
+
+    @if ($this->showCreatePayPalModal)
+        <div class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 p-4">
+            <div class="w-full max-w-2xl rounded-xl border border-slate-200 bg-white shadow-2xl">
+                <div class="flex items-center justify-between border-b border-slate-200 px-5 py-4">
+                    <h3 class="text-base font-semibold text-slate-900">Create PayPal Invoice</h3>
+                    <button type="button" wire:click="closeCreatePayPalModal" class="dinx-focus-ring rounded-md px-2 py-1 text-slate-500 hover:bg-slate-100 hover:text-slate-700">Close</button>
+                </div>
+                <div class="space-y-4 px-5 py-4">
+                    <div class="grid gap-4 md:grid-cols-2">
+                        <label class="space-y-1 text-sm text-slate-700">
+                            <span class="font-medium">Client</span>
+                            <select wire:model="paypalCreateForm.partner_id" class="dinx-focus-ring h-10 w-full rounded-md border border-slate-300 px-3 text-sm">
+                                <option value="">Select client</option>
+                                @foreach ($clientOptions as $id => $name)
+                                    <option value="{{ $id }}">{{ $name }}</option>
+                                @endforeach
+                            </select>
+                            @error('paypalCreateForm.partner_id') <span class="text-xs text-rose-600">{{ $message }}</span> @enderror
+                        </label>
+                        <label class="space-y-1 text-sm text-slate-700">
+                            <span class="font-medium">Amount</span>
+                            <input type="number" min="0.01" step="0.01" wire:model="paypalCreateForm.amount" placeholder="0.00" class="dinx-focus-ring h-10 w-full rounded-md border border-slate-300 px-3 text-sm" />
+                            @error('paypalCreateForm.amount') <span class="text-xs text-rose-600">{{ $message }}</span> @enderror
+                        </label>
+                        <label class="space-y-1 text-sm text-slate-700">
+                            <span class="font-medium">Invoice Date</span>
+                            <input type="date" wire:model="paypalCreateForm.invoice_date" class="dinx-focus-ring h-10 w-full rounded-md border border-slate-300 px-3 text-sm" />
+                            @error('paypalCreateForm.invoice_date') <span class="text-xs text-rose-600">{{ $message }}</span> @enderror
+                        </label>
+                        <label class="space-y-1 text-sm text-slate-700">
+                            <span class="font-medium">Due Date</span>
+                            <input type="date" wire:model="paypalCreateForm.invoice_date_due" class="dinx-focus-ring h-10 w-full rounded-md border border-slate-300 px-3 text-sm" />
+                            @error('paypalCreateForm.invoice_date_due') <span class="text-xs text-rose-600">{{ $message }}</span> @enderror
+                        </label>
+                        <label class="space-y-1 text-sm text-slate-700">
+                            <span class="font-medium">Currency</span>
+                            <select wire:model="paypalCreateForm.currency_id" class="dinx-focus-ring h-10 w-full rounded-md border border-slate-300 px-3 text-sm">
+                                <option value="">Auto</option>
+                                @foreach ($currencyOptions as $id => $code)
+                                    <option value="{{ $id }}">{{ $code }}</option>
+                                @endforeach
+                            </select>
+                            @error('paypalCreateForm.currency_id') <span class="text-xs text-rose-600">{{ $message }}</span> @enderror
+                        </label>
+                        <label class="space-y-1 text-sm text-slate-700">
+                            <span class="font-medium">Contract (optional)</span>
+                            <select wire:model="paypalCreateForm.contract_id" class="dinx-focus-ring h-10 w-full rounded-md border border-slate-300 px-3 text-sm">
+                                <option value="">No contract link</option>
+                                @foreach ($contractOptions as $id => $title)
+                                    <option value="{{ $id }}">{{ $title }}</option>
+                                @endforeach
+                            </select>
+                            @error('paypalCreateForm.contract_id') <span class="text-xs text-rose-600">{{ $message }}</span> @enderror
+                        </label>
+                    </div>
+                    <label class="space-y-1 text-sm text-slate-700">
+                        <span class="font-medium">Reference (optional)</span>
+                        <input type="text" wire:model="paypalCreateForm.reference" placeholder="Retainer March 2026" class="dinx-focus-ring h-10 w-full rounded-md border border-slate-300 px-3 text-sm" />
+                        @error('paypalCreateForm.reference') <span class="text-xs text-rose-600">{{ $message }}</span> @enderror
+                    </label>
+                </div>
+                <div class="flex items-center justify-end gap-2 border-t border-slate-200 px-5 py-4">
+                    <button type="button" wire:click="closeCreatePayPalModal" class="dinx-focus-ring rounded-md border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50">Cancel</button>
+                    <button type="button" wire:click="createPayPalInvoice" class="dinx-focus-ring rounded-md bg-[#004AAD] px-3 py-2 text-xs font-semibold text-white hover:bg-[#003D8F]">Create & Generate PayPal Link</button>
+                </div>
+            </div>
+        </div>
+    @endif
 </x-filament-panels::page>

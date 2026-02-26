@@ -13,7 +13,7 @@
             @endif
         </div>
 
-        @if (filled(trim((string) $slot)))
+        @if (isset($slot) && method_exists($slot, 'isNotEmpty') ? $slot->isNotEmpty() : filled(trim((string) $slot)))
             <div class="flex flex-wrap items-center gap-2">
                 {{ $slot }}
             </div>
