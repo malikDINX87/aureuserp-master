@@ -174,12 +174,17 @@
 
                 @if ($moreGroups->isNotEmpty())
                     <li class="fi-dinx-sidebar-section" x-data="{ open: false }">
-                        <button type="button" @click="open = ! open" class="fi-dinx-more-modules-toggle">
+                        <button
+                            type="button"
+                            @click="open = ! open"
+                            x-bind:aria-expanded="open ? 'true' : 'false'"
+                            class="fi-dinx-more-modules-toggle"
+                        >
                             <span>More Modules</span>
                             <span class="fi-dinx-more-modules-icon" x-bind:class="{ 'fi-rotate-180': open }">v</span>
                         </button>
 
-                        <div x-show="open" x-cloak class="fi-dinx-more-modules-body">
+                        <div x-show="open" x-cloak x-transition.opacity.duration.150ms class="fi-dinx-more-modules-body">
                             @foreach ($moreGroups as $group)
                                 <div class="fi-dinx-more-group">
                                     @if ($group['label'])

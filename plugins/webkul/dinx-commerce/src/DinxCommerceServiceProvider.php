@@ -3,6 +3,7 @@
 namespace Webkul\DinxCommerce;
 
 use Filament\Panel;
+use Illuminate\Support\Facades\Blade;
 use Webkul\DinxCommerce\Console\Commands\InstallDinxCommerceCommand;
 use Webkul\DinxCommerce\Console\Commands\RunRecurringInvoicesCommand;
 use Webkul\PluginManager\Console\Commands\UninstallCommand;
@@ -57,7 +58,7 @@ class DinxCommerceServiceProvider extends PackageServiceProvider
 
     public function packageBooted(): void
     {
-        //
+        Blade::anonymousComponentPath(__DIR__.'/../resources/views', 'dinx-commerce');
     }
 
     public function packageRegistered(): void

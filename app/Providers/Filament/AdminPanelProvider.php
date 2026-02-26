@@ -35,7 +35,7 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
-            ->homeUrl(fn (): string => Profile::getUrl())
+            ->homeUrl(fn (): string => url('/admin/erp/projects'))
             ->login()
             ->favicon(asset('images/dinx-logo.png'))
             ->brandName('DINX ERP')
