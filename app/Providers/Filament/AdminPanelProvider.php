@@ -41,6 +41,7 @@ class AdminPanelProvider extends PanelProvider
             ->brandName('DINX ERP')
             ->brandLogo(asset('images/dinx-logo.png'))
             ->brandLogoHeight('2.25rem')
+            ->darkMode(false)
             ->renderHook(
                 PanelsRenderHook::HEAD_END,
                 fn (): string => '<link rel="stylesheet" href="'.asset('css/filament/dinx-erp-crm-theme.css').'">',

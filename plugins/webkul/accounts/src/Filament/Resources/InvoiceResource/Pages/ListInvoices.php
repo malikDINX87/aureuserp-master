@@ -81,7 +81,8 @@ class ListInvoices extends ListRecords
     {
         return [
             CreateAction::make()
-                ->icon('heroicon-o-plus-circle'),
+                ->label('New Invoice')
+                ->icon('heroicon-o-plus'),
         ];
     }
 }
