@@ -87,9 +87,14 @@
             @endif
 
             @if ($isAdminPanel)
-                <div class="dinx-topbar-heading">
-                    <p class="dinx-topbar-title">DINX ERP</p>
-                    <p class="dinx-topbar-subtitle">Operations Workspace</p>
+                <div class="dinx-topbar-logo-wrap">
+                    <a href="{{ url('/admin/erp/projects') }}" class="dinx-topbar-logo-link" aria-label="DINX ERP Home">
+                        <img
+                            src="https://dinxsolutions.com/assets/1_1761391826804-B48dGAr0.png"
+                            alt="DINX"
+                            class="dinx-topbar-logo-image"
+                        />
+                    </a>
                 </div>
             @else
                 {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::TOPBAR_LOGO_BEFORE) }}

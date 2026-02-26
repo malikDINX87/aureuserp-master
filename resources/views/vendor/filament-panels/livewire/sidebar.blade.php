@@ -97,15 +97,6 @@
                 {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::SIDEBAR_LOGO_AFTER) }}
             </header>
 
-            @if ($isAdminPanel)
-                <div class="fi-dinx-workspace">
-                    <p class="fi-dinx-workspace-title">DINX Workspace</p>
-                    <p class="fi-dinx-workspace-copy">ERP Admin</p>
-                    <a href="https://dinxsolutions.com/dashboard/apps" class="fi-dinx-workspace-link" target="_blank" rel="noreferrer">
-                        Back to DINX Apps
-                    </a>
-                </div>
-            @endif
         </div>
 
         <nav class="fi-sidebar-nav">
@@ -247,6 +238,15 @@
 
             {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::SIDEBAR_NAV_END) }}
         </nav>
+
+        @if ($isAdminPanel)
+            <div class="fi-dinx-sidebar-footer">
+                <a href="https://dinxsolutions.com/dashboard" class="fi-dinx-dashboard-back-link">
+                    <span class="fi-dinx-dashboard-back-icon" aria-hidden="true">&larr;</span>
+                    <span>Back to DINX Dashboard</span>
+                </a>
+            </div>
+        @endif
 
         {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::SIDEBAR_FOOTER) }}
     </aside>

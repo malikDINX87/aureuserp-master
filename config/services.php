@@ -51,4 +51,8 @@ return [
         'jti_ttl_seconds' => env('DINX_ERP_SSO_JTI_TTL_SECONDS', 600),
     ],
 
+    'dinx_erp_ui' => [
+        'default_avatar_url' => env('DINX_ERP_DEFAULT_AVATAR_URL'),
+    ],
+
 ];

@@ -52,23 +52,29 @@
     gap: 0.35rem;
 }
 
-.fi-panel-admin .dinx-topbar-heading {
-    margin-left: 0.25rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-    line-height: 1.15;
+.fi-panel-admin .dinx-topbar-logo-wrap {
+    margin-left: 0.3rem;
+    display: inline-flex;
+    align-items: center;
 }
 
-.fi-panel-admin .dinx-topbar-title {
-    font-size: 0.95rem;
-    font-weight: 700;
-    color: var(--dinx-text);
+.fi-panel-admin .dinx-topbar-logo-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    outline: none;
 }
 
-.fi-panel-admin .dinx-topbar-subtitle {
-    font-size: 0.72rem;
-    color: var(--dinx-text-muted);
+.fi-panel-admin .dinx-topbar-logo-link:focus-visible {
+    box-shadow: 0 0 0 3px rgba(0, 74, 173, 0.2);
+}
+
+.fi-panel-admin .dinx-topbar-logo-image {
+    width: auto;
+    height: 1.75rem;
+    max-width: min(12rem, 38vw);
+    object-fit: contain;
 }
 
 .fi-panel-admin .dinx-topbar-end {
@@ -95,6 +101,8 @@
 /* Sidebar */
 .fi-panel-admin .fi-sidebar {
     width: 16.25rem;
+    display: flex;
+    flex-direction: column;
     border-right: 1px solid var(--dinx-border);
     background: var(--dinx-sidebar-bg);
 }
@@ -135,40 +143,9 @@
     color: var(--dinx-text-muted);
 }
 
-.fi-panel-admin .fi-dinx-workspace {
-    margin: 0.7rem 1rem 0;
-    padding: 0.7rem 0.75rem;
-    border: 1px solid var(--dinx-border-strong);
-    border-radius: var(--dinx-radius);
-    background: var(--dinx-surface-soft);
-}
-
-.fi-panel-admin .fi-dinx-workspace-title {
-    font-size: 0.78rem;
-    font-weight: 700;
-    color: var(--dinx-text);
-}
-
-.fi-panel-admin .fi-dinx-workspace-copy {
-    margin-top: 0.1rem;
-    font-size: 0.72rem;
-    color: var(--dinx-text-muted);
-}
-
-.fi-panel-admin .fi-dinx-workspace-link {
-    margin-top: 0.45rem;
-    display: inline-flex;
-    font-size: 0.74rem;
-    font-weight: 600;
-    color: var(--dinx-primary);
-    text-decoration: none;
-}
-
-.fi-panel-admin .fi-dinx-workspace-link:hover {
-    text-decoration: underline;
-}
-
 .fi-panel-admin .fi-sidebar-nav {
+    flex: 1 1 auto;
+    min-height: 0;
     padding: 0.75rem;
 }
 
@@ -292,6 +269,42 @@
     border-radius: var(--dinx-radius);
     background: #f9fbfe;
     padding: 0.5rem;
+}
+
+.fi-panel-admin .fi-dinx-sidebar-footer {
+    padding: 0.75rem;
+    border-top: 1px solid var(--dinx-border);
+}
+
+.fi-panel-admin .fi-dinx-dashboard-back-link {
+    width: 100%;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    border-radius: 11px;
+    border: 1px solid transparent;
+    color: #334155;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-decoration: none;
+    padding: 0.64rem 0.72rem;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.fi-panel-admin .fi-dinx-dashboard-back-link:hover {
+    background: rgba(0, 74, 173, 0.1);
+    border-color: var(--dinx-border-strong);
+    color: var(--dinx-primary);
+}
+
+.fi-panel-admin .fi-dinx-dashboard-back-link:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 74, 173, 0.18);
+}
+
+.fi-panel-admin .fi-dinx-dashboard-back-icon {
+    font-size: 0.92rem;
+    line-height: 1;
 }
 
 /* Filament controls */
@@ -696,8 +709,9 @@
         font-size: 1.4rem;
     }
 
-    .fi-panel-admin .dinx-topbar-subtitle {
-        display: none;
+    .fi-panel-admin .dinx-topbar-logo-image {
+        max-width: min(8.5rem, 40vw);
+        height: 1.5rem;
     }
 
     .fi-panel-admin .dinx-toolbar {

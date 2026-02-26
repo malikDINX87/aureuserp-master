@@ -9,6 +9,7 @@ use Filament\Auth\MultiFactor\App\Contracts\HasAppAuthentication;
 use Filament\Auth\MultiFactor\App\Contracts\HasAppAuthenticationRecovery;
 use Filament\Auth\MultiFactor\Email\Concerns\InteractsWithEmailAuthentication;
 use Filament\Auth\MultiFactor\Email\Contracts\HasEmailAuthentication;
+use Filament\Models\Contracts\HasAvatar;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -26,7 +27,7 @@ use Webkul\Security\Enums\PermissionType;
 use Webkul\Security\Traits\HasPermissionScope;
 use Webkul\Support\Models\Company;
 
-class User extends BaseUser implements FilamentUser, HasAppAuthentication, HasAppAuthenticationRecovery, HasEmailAuthentication
+class User extends BaseUser implements FilamentUser, HasAvatar, HasAppAuthentication, HasAppAuthenticationRecovery, HasEmailAuthentication
 {
     use HasPermissionScope,
         HasRoles,
@@ -71,9 +72,20 @@ class User extends BaseUser implements FilamentUser, HasAppAuthentication, HasAp
         return $this->belongsTo(User::class, 'creator_id');
     }
 
+    public function getFilamentAvatarUrl(): ?string
+    {
+        $configuredAvatar = trim((string) config('services.dinx_erp_ui.default_avatar_url', ''));
+
+        if ($configuredAvatar !== '') {
+            return $configuredAvatar;
+        }
+
+        return $this->partner?->avatar_url;
+    }
+
     public function getAvatarUrlAttribute()
     {
-        return $this->partner?->avatar_url;
+        return $this->getFilamentAvatarUrl();
     }
 
     public function teams(): BelongsToMany
