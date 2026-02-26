@@ -113,11 +113,11 @@ class InstallDinxCommerceCommand extends Command
 
     protected function assignWorkspacePermissionsToDefaultRoles(): void
     {
-        $permissions = $this->workspacePermissionNames();
+        $permissions = $this->defaultRolePermissionNames();
 
         $roles = Role::query()
             ->where('guard_name', 'web')
-            ->whereIn('name', ['Admin', 'GlobalAdmin', 'Super Admin'])
+            ->whereIn('name', ['Admin', 'GlobalAdmin', 'Super Admin', 'Super_admin'])
             ->get();
 
         foreach ($roles as $role) {
@@ -144,5 +144,27 @@ class InstallDinxCommerceCommand extends Command
             'page_dinx_workspace_reports',
             'page_dinx_workspace_settings',
         ];
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    protected function defaultRolePermissionNames(): array
+    {
+        return array_values(array_unique(array_merge(
+            $this->workspacePermissionNames(),
+            [
+                // Keep "Open Full Invoice Form" usable for DINX Admin SSO users.
+                'view_any_accounting_invoice',
+                'view_accounting_invoice',
+                'create_accounting_invoice',
+                'update_accounting_invoice',
+                // Fallback for non-clustered account invoice routes.
+                'view_any_account_invoice',
+                'view_account_invoice',
+                'create_account_invoice',
+                'update_account_invoice',
+            ]
+        )));
     }
 }
