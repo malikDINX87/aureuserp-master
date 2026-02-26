@@ -19,7 +19,10 @@ return new class extends Migration
             $table->timestamp('confirmed_at')->nullable();
             $table->timestamps();
 
-            $table->unique(['statement_line_id', 'move_line_id']);
+            $table->unique(
+                ['statement_line_id', 'move_line_id'],
+                'dinx_bank_recon_stmt_move_uq'
+            );
         });
     }
 
