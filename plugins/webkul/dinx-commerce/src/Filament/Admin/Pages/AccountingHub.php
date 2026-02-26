@@ -299,7 +299,17 @@ class AccountingHub extends Page
             ->orderBy('name')
             ->get(['id', 'account_type', 'code', 'name']);
 
-        $grouped = $accounts->groupBy(fn (Account $account) => $this->resolveAccountSection((string) $account->account_type));
+        $grouped = $accounts->groupBy(function (Account $account): string {
+            $accountType = $account->account_type;
+
+            if ($accountType instanceof \BackedEnum) {
+                $accountType = $accountType->value;
+            } elseif ($accountType instanceof \UnitEnum) {
+                $accountType = $accountType->name;
+            }
+
+            return $this->resolveAccountSection((string) $accountType);
+        });
 
         $sectionOrder = ['Assets', 'Liabilities', 'Equity', 'Income', 'Expenses', 'Other'];
 
