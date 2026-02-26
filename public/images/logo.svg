@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="220" height="48" viewBox="0 0 220 48" fill="none">
+  <rect width="48" height="48" rx="12" fill="#0F172A"/>
+  <circle cx="24" cy="24" r="12" fill="#2563EB"/>
+  <circle cx="24" cy="24" r="6" fill="#0F172A"/>
+  <path d="M17 15L31 33" stroke="#22C55E" stroke-width="4" stroke-linecap="round"/>
+  <text x="60" y="31" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#0F172A">DINX ERP</text>
+</svg>

@@ -1,0 +1,28 @@
+{
+    "name": "webkul/dinx-erp-sync",
+    "description": "DINX CRM to Aureus ERP client conversion synchronization plugin",
+    "authors": [
+        {
+            "name": "Aureus ERP",
+            "email": "support@aureuserp.in"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Webkul\\DinxErpSync\\DinxErpSyncServiceProvider"
+            ],
+            "aliases": {}
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Webkul\\DinxErpSync\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Webkul\\DinxErpSync\\Tests\\": "tests/"
+        }
+    }
+}

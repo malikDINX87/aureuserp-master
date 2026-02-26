@@ -1,0 +1,372 @@
+/* DINX CRM visual alignment for Filament admin panel */
+
+:root {
+    --dinx-primary: #004aad;
+    --dinx-primary-hover: #003d8f;
+    --dinx-surface: #ffffff;
+    --dinx-page-bg: #f8fafc;
+    --dinx-border: #dbe3ef;
+    --dinx-border-strong: #c6d3e6;
+    --dinx-sidebar-bg: #eef3f8;
+    --dinx-text: #0f172a;
+    --dinx-muted: #64748b;
+    --dinx-shadow-md: 0 8px 24px rgba(15, 23, 42, 0.08);
+    --dinx-shadow-sm: 0 4px 14px rgba(15, 23, 42, 0.06);
+}
+
+.fi-body.fi-panel-admin {
+    background: var(--dinx-page-bg);
+    color: var(--dinx-text);
+    font-family: Inter, Tajawal, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+.fi-panel-admin .fi-layout,
+.fi-panel-admin .fi-main,
+.fi-panel-admin .fi-main-ctn,
+.fi-panel-admin .fi-page-main {
+    background: var(--dinx-page-bg);
+}
+
+.fi-panel-admin .fi-topbar {
+    min-height: 4rem;
+    padding-inline: 1rem;
+    border-bottom: 1px solid var(--dinx-border);
+    background: var(--dinx-surface);
+    box-shadow: none;
+}
+
+.fi-panel-admin .fi-topbar-start {
+    gap: 0.5rem;
+}
+
+.fi-panel-admin .fi-topbar-start .fi-logo {
+    display: none;
+}
+
+.fi-panel-admin .fi-theme-switcher {
+    display: none;
+}
+
+.fi-panel-admin .fi-icon-btn,
+.fi-panel-admin .fi-topbar .fi-btn {
+    border-radius: 0.625rem;
+}
+
+.fi-panel-admin .fi-icon-btn:hover {
+    background: rgba(0, 74, 173, 0.08);
+    color: var(--dinx-primary);
+}
+
+.fi-panel-admin .fi-sidebar {
+    width: 16.25rem;
+    border-right: 1px solid var(--dinx-border);
+    background: var(--dinx-sidebar-bg);
+}
+
+.fi-panel-admin .fi-sidebar-header {
+    padding: 1rem 1rem 0.85rem;
+    border-bottom: 1px solid var(--dinx-border);
+}
+
+.fi-panel-admin .fi-dinx-sidebar-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+}
+
+.fi-panel-admin .fi-dinx-sidebar-logo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.fi-panel-admin .fi-dinx-sidebar-logo img {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.5rem;
+    object-fit: contain;
+}
+
+.fi-panel-admin .fi-dinx-sidebar-title {
+    font-size: 1.02rem;
+    font-weight: 700;
+    line-height: 1.15;
+    color: var(--dinx-text);
+}
+
+.fi-panel-admin .fi-dinx-sidebar-subtitle {
+    margin-top: 0.1rem;
+    font-size: 0.75rem;
+    color: var(--dinx-muted);
+}
+
+.fi-panel-admin .fi-dinx-workspace {
+    margin: 0.7rem 1rem 0;
+    padding: 0.7rem 0.75rem;
+    border: 1px solid var(--dinx-border-strong);
+    border-radius: 0.75rem;
+    background: #f7faff;
+}
+
+.fi-panel-admin .fi-dinx-workspace-title {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--dinx-text);
+}
+
+.fi-panel-admin .fi-dinx-workspace-copy {
+    margin-top: 0.1rem;
+    font-size: 0.72rem;
+    color: var(--dinx-muted);
+}
+
+.fi-panel-admin .fi-dinx-workspace-link {
+    margin-top: 0.4rem;
+    display: inline-flex;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--dinx-primary);
+    text-decoration: none;
+}
+
+.fi-panel-admin .fi-dinx-workspace-link:hover {
+    text-decoration: underline;
+}
+
+.fi-panel-admin .fi-sidebar-nav {
+    padding: 0.75rem;
+}
+
+.fi-panel-admin .fi-sidebar-nav-groups {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+}
+
+.fi-panel-admin .fi-dinx-sidebar-section-label {
+    margin: 0 0.35rem 0.35rem;
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--dinx-muted);
+}
+
+.fi-panel-admin .fi-dinx-sidebar-group-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0.22rem;
+}
+
+.fi-panel-admin .fi-sidebar-item-btn {
+    min-height: 2.4rem;
+    border-radius: 0.68rem;
+    padding-inline: 0.82rem;
+    transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+    color: #334155;
+}
+
+.fi-panel-admin .fi-sidebar-item:not(.fi-active) .fi-sidebar-item-btn:hover {
+    background: rgba(0, 74, 173, 0.12);
+    color: var(--dinx-primary);
+}
+
+.fi-panel-admin .fi-sidebar-item.fi-active .fi-sidebar-item-btn {
+    background: var(--dinx-primary);
+    color: #ffffff;
+    box-shadow: 0 8px 18px rgba(0, 74, 173, 0.26);
+}
+
+.fi-panel-admin .fi-sidebar-item.fi-active .fi-sidebar-item-icon,
+.fi-panel-admin .fi-sidebar-item.fi-active .fi-sidebar-item-label {
+    color: #ffffff;
+}
+
+.fi-panel-admin .fi-sidebar-item-icon {
+    width: 1rem;
+    height: 1rem;
+}
+
+.fi-panel-admin .fi-page {
+    padding: 1rem;
+}
+
+.fi-panel-admin .fi-dinx-more-modules-toggle {
+    margin-top: 0.4rem;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 0.62rem;
+    border: 1px solid var(--dinx-border);
+    background: #f5f8fc;
+    color: #334155;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+    padding: 0.58rem 0.72rem;
+}
+
+.fi-panel-admin .fi-dinx-more-modules-toggle:hover {
+    border-color: var(--dinx-border-strong);
+    background: #eff4fb;
+}
+
+.fi-panel-admin .fi-dinx-more-modules-icon {
+    width: 0.95rem;
+    height: 0.95rem;
+    transition: transform 0.2s ease;
+}
+
+.fi-panel-admin .fi-dinx-more-modules-icon.fi-rotate-180 {
+    transform: rotate(180deg);
+}
+
+.fi-panel-admin .fi-dinx-more-modules-body {
+    margin-top: 0.55rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.fi-panel-admin .fi-dinx-more-group {
+    border: 1px solid #e4ecf7;
+    border-radius: 0.75rem;
+    background: #f9fbfe;
+    padding: 0.5rem;
+}
+
+.fi-panel-admin .fi-header-heading {
+    color: var(--dinx-text);
+    font-weight: 700;
+}
+
+.fi-panel-admin .fi-breadcrumbs-item-label {
+    color: var(--dinx-muted);
+}
+
+.fi-panel-admin .fi-btn {
+    border-radius: 0.62rem;
+    font-weight: 600;
+}
+
+.fi-panel-admin .fi-btn.fi-color-primary {
+    background: var(--dinx-primary);
+    border-color: var(--dinx-primary);
+    color: #ffffff;
+}
+
+.fi-panel-admin .fi-btn.fi-color-primary:hover {
+    background: var(--dinx-primary-hover);
+    border-color: var(--dinx-primary-hover);
+}
+
+.fi-panel-admin .fi-input-wrp,
+.fi-panel-admin .fi-select-input,
+.fi-panel-admin .fi-input,
+.fi-panel-admin .fi-pagination-records-per-page-select .fi-input {
+    border-radius: 0.62rem;
+    border: 1px solid var(--dinx-border-strong);
+    background: #ffffff;
+    box-shadow: none;
+}
+
+.fi-panel-admin .fi-input-wrp:focus-within {
+    border-color: var(--dinx-primary);
+    box-shadow: 0 0 0 3px rgba(0, 74, 173, 0.14);
+}
+
+.fi-panel-admin .fi-input:focus,
+.fi-panel-admin .fi-select-input:focus {
+    border-color: var(--dinx-primary);
+    box-shadow: 0 0 0 3px rgba(0, 74, 173, 0.14);
+    outline: none;
+}
+
+.fi-panel-admin .fi-ta-ctn,
+.fi-panel-admin .fi-section,
+.fi-panel-admin .fi-dropdown-panel,
+.fi-panel-admin .fi-modal-window {
+    border: 1px solid var(--dinx-border);
+    border-radius: 0.9rem;
+    background: #ffffff;
+    box-shadow: var(--dinx-shadow-sm);
+}
+
+.fi-panel-admin .fi-ta-header-ctn {
+    border-bottom: 1px solid #e6edf7;
+    background: #ffffff;
+}
+
+.fi-panel-admin .fi-ta-table {
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.fi-panel-admin .fi-ta-header-cell {
+    color: #334155;
+    font-weight: 600;
+}
+
+.fi-panel-admin .fi-ta-row {
+    border-bottom: 1px solid #edf2fa;
+}
+
+.fi-panel-admin .fi-ta-cell,
+.fi-panel-admin .fi-ta-header-cell {
+    padding-top: 0.55rem;
+    padding-bottom: 0.55rem;
+}
+
+.fi-panel-admin .fi-section-content-ctn {
+    padding: 0.85rem;
+}
+
+.fi-panel-admin .fi-dropdown-list-item {
+    border-radius: 0.5rem;
+}
+
+.fi-panel-admin .fi-dropdown-list-item:hover {
+    background: rgba(0, 74, 173, 0.08);
+    color: var(--dinx-primary);
+}
+
+.fi-panel-admin .fi-badge.fi-color-primary {
+    background: rgba(0, 74, 173, 0.12);
+    color: var(--dinx-primary);
+}
+
+.fi-panel-admin .fi-badge.fi-color-success {
+    background: rgba(5, 150, 105, 0.14);
+    color: #047857;
+}
+
+.fi-panel-admin .fi-badge.fi-color-warning {
+    background: rgba(217, 119, 6, 0.16);
+    color: #b45309;
+}
+
+.fi-panel-admin .fi-badge.fi-color-danger {
+    background: rgba(225, 29, 72, 0.14);
+    color: #be123c;
+}
+
+.fi-panel-admin .fi-pagination {
+    border-top: 1px solid #e6edf7;
+}
+
+@media (max-width: 1024px) {
+    .fi-panel-admin .fi-page {
+        padding: 0.75rem;
+    }
+
+    .fi-panel-admin .fi-sidebar {
+        width: 17rem;
+    }
+
+    .fi-panel-admin .fi-topbar {
+        min-height: 3.5rem;
+        padding-inline: 0.75rem;
+    }
+}

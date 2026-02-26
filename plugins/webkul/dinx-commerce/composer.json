@@ -1,0 +1,23 @@
+{
+    "name": "webkul/dinx-commerce",
+    "description": "DINX commerce extensions for contracts, PayPal billing, and DocuSign events",
+    "authors": [
+        {
+            "name": "DINX Solutions",
+            "email": "support@dinxsolutions.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Webkul\\DinxCommerce\\DinxCommerceServiceProvider"
+            ],
+            "aliases": {}
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Webkul\\DinxCommerce\\": "src/"
+        }
+    }
+}
